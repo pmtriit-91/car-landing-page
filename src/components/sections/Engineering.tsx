@@ -25,8 +25,8 @@ export default function Engineering() {
     });
 
     // Scroll mapping: split the shell and chassis progressively
-    const scrollShellY = useTransform(scrollYProgress, [0.2, 0.5, 0.8], [0, -120, -160]);
-    const scrollChassisY = useTransform(scrollYProgress, [0.2, 0.5, 0.8], [0, 120, 160]);
+    const scrollShellY = useTransform(scrollYProgress, [0.2, 0.5, 0.8], [0, -140, -180]);
+    const scrollChassisY = useTransform(scrollYProgress, [0.2, 0.5, 0.8], [0, 140, 180]);
     const scrollOpacity = useTransform(scrollYProgress, [0.2, 0.45, 0.75], [1, 0.55, 0.4]);
     const scrollScale = useTransform(scrollYProgress, [0.2, 0.5], [1, 0.9]);
 
@@ -36,8 +36,8 @@ export default function Engineering() {
             title: 'Lớp Vỏ Monocoque Carbon L5',
             spec: 'Độ bền xoắn 55,000 Nm/độ',
             desc: 'Chế tác từ sợi carbon carbon-fiber hàng không ép nhiệt áp lực cao. Bảo vệ tuyệt đối cabin hành khách và định hình 100% dòng lưu chuyển khí động học.',
-            x: '15%',
-            y: '18%',
+            x: '20%',
+            y: '22%',
             anchor: 'top',
         },
         {
@@ -45,8 +45,8 @@ export default function Engineering() {
             title: 'Khung Gầm Siêu Dẫn EV-Bed',
             spec: 'Hợp kim Magie-Nhôm siêu nhẹ',
             desc: 'Kiến trúc phẳng trượt nước tích hợp hấp thụ xung lực đa điểm, phân bổ trọng tâm lý tưởng 50:50 hoàn hảo ở sàn xe.',
-            x: '82%',
-            y: '82%',
+            x: '80%',
+            y: '75%',
             anchor: 'bottom',
         },
         {
@@ -56,24 +56,19 @@ export default function Engineering() {
             desc: 'Sử dụng chất điện phân rắn triệt tiêu nguy cơ cháy nổ, kết hợp lõi làm mát lỏng tản nhiệt vi mô từng cell pin.',
             x: '50%',
             y: '55%',
-            anchor: 'bottom',
+            anchor: 'top',
         },
         {
             id: 4,
             title: 'Động Cơ Điện Kép Siêu Dẫn',
             spec: 'Dual Quantum Motors - 1200 HP',
             desc: 'Hệ thống truyền động kép hiệu suất 98.7% với công nghệ làm mát lõi rotor trực tiếp, cho phản hồi mô-men xoắn tức thời.',
-            x: '72%',
-            y: '65%',
-            anchor: 'bottom',
+            x: '78%',
+            y: '38%',
+            anchor: 'top',
         },
     ];
 
-    // Decide transform variables based on manual button toggle OR active scroll
-    const getShellY = () => (isExploded ? -140 : scrollShellY);
-    const getChassisY = () => (isExploded ? 140 : scrollChassisY);
-    const getOpacity = () => (isExploded ? 0.45 : scrollOpacity);
-    const getScale = () => (isExploded ? 0.88 : scrollScale);
 
     return (
         <section
@@ -187,11 +182,11 @@ export default function Engineering() {
                     <motion.div
                         style={{
                             position: 'absolute',
-                            y: getShellY(),
-                            opacity: getOpacity(),
-                            scale: getScale(),
-                            width: '72%',
-                            maxWidth: '650px',
+                            y: isExploded ? -180 : scrollShellY,
+                            opacity: isExploded ? 0.45 : scrollOpacity,
+                            scale: isExploded ? 0.85 : scrollScale,
+                            width: '58%',
+                            maxWidth: '480px',
                             zIndex: 25,
                             filter: 'drop-shadow(0 -20px 40px rgba(0, 242, 254, 0.15))',
                         }}
@@ -226,10 +221,10 @@ export default function Engineering() {
                     <motion.div
                         style={{
                             position: 'absolute',
-                            y: getChassisY(),
-                            scale: getScale(),
-                            width: '72%',
-                            maxWidth: '650px',
+                            y: isExploded ? 180 : scrollChassisY,
+                            scale: isExploded ? 0.85 : scrollScale,
+                            width: '58%',
+                            maxWidth: '480px',
                             zIndex: 15,
                             filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.9))',
                         }}
