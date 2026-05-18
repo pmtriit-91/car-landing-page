@@ -10,6 +10,9 @@ interface AmbientColor {
   glowClass: string
   mode: string
   desc: string
+  zoomScale: number
+  zoomX: number
+  zoomY: number
 }
 
 export default function Interior() {
@@ -20,7 +23,10 @@ export default function Interior() {
       hex: '#00f2fe',
       glowClass: 'glow-text-cyan',
       mode: 'Holographic HUD / Autonomous L5 Driving',
-      desc: 'Kích hoạt giao diện thực tế tăng cường lập thể HUD 3D màu xanh neon. Bản đồ không gian thời gian thực hiển thị nổi trên kính lái, kích hoạt toàn bộ cảm biến tự lái L5 và trợ lý ảo thông minh AETHER.'
+      desc: 'Kích hoạt giao diện thực tế tăng cường lập thể HUD 3D màu xanh neon. Bản đồ không gian thời gian thực hiển thị nổi trên kính lái, kích hoạt toàn bộ cảm biến tự lái L5 và trợ lý ảo thông minh AETHER.',
+      zoomScale: 1.18,
+      zoomX: -40,
+      zoomY: 15
     },
     {
       name: 'Crimson',
@@ -28,7 +34,10 @@ export default function Interior() {
       hex: '#ff0055',
       glowClass: 'glow-text-crimson',
       mode: 'Performance Mode / Full Engine Overdrive',
-      desc: 'Chuyển đổi toàn bộ giao diện điều khiển sang màu đỏ rực lửa. Toàn bộ công suất 1200 mã lực được giải phóng, hạ thấp trọng tâm treo xuống sát đất mặt đua, tăng lực phản hồi vô lăng và mở cánh gió đuôi xe.'
+      desc: 'Chuyển đổi toàn bộ giao diện điều khiển sang màu đỏ rực lửa. Toàn bộ công suất 1200 mã lực được giải phóng, hạ thấp trọng tâm treo xuống sát đất mặt đua, tăng lực phản hồi vô lăng và mở cánh gió đuôi xe.',
+      zoomScale: 1.25,
+      zoomX: 60,
+      zoomY: -20
     },
     {
       name: 'Amber',
@@ -36,7 +45,10 @@ export default function Interior() {
       hex: '#ffa300',
       glowClass: 'glow-text-amber',
       mode: 'Long-Range Eco / Solid-State Optimization',
-      desc: 'Thiết lập buồng lái sang tông màu vàng hổ phách thư giãn. Tối ưu hóa tối đa lượng pin tiêu hao bằng cách phân bổ lực phanh tái sinh chủ động, giảm tải điều hòa và điều chỉnh mô-men xoắn hành trình êm dịu.'
+      desc: 'Thiết lập buồng lái sang tông màu vàng hổ phách thư giãn. Tối ưu hóa tối đa lượng pin tiêu hao bằng cách phân bổ lực phanh tái sinh chủ động, giảm tải điều hòa và điều chỉnh mô-men xoắn hành trình êm dịu.',
+      zoomScale: 1.12,
+      zoomX: 0,
+      zoomY: 10
     },
     {
       name: 'Emerald',
@@ -44,7 +56,10 @@ export default function Interior() {
       hex: '#00e676',
       glowClass: 'hud-dot',
       mode: 'Bio-Cabin Air / Ionizing Regeneration',
-      desc: 'Bao phủ khoang lái bằng nguồn ánh sáng xanh ngọc bích êm dịu. Hệ thống kích hoạt máy ion hóa lọc hạt bụi siêu vi PM2.5, phun hương tinh dầu thông tuyết tái tạo tinh thần và giảm nhịp tim tài xế.'
+      desc: 'Bao phủ khoang lái bằng nguồn ánh sáng xanh ngọc bích êm dịu. Hệ thống kích hoạt máy ion hóa lọc hạt bụi siêu vi PM2.5, phun hương tinh dầu thông tuyết tái tạo tinh thần và giảm nhịp tim tài xế.',
+      zoomScale: 1.05,
+      zoomX: -20,
+      zoomY: -15
     }
   ]
 
@@ -55,16 +70,17 @@ export default function Interior() {
       <div className="container-luxury">
         <div className="interior-row">
           
-          {/* Left Side: Immersive Cockpit render with real-time ambient tint blend overlays */}
+          {/* Left Side: Immersive Cockpit render with real-time ambient tint blend overlays & camera zoom */}
           <div className="interior-media-side">
-            <div className="interior-img-box">
+            <div className="interior-img-box" style={{ overflow: 'hidden', borderRadius: '32px' }}>
               
               {/* Color Blend Layer 1 (mix-blend-mode: color) */}
               <div
                 className="interior-blend-layer"
                 style={{
                   background: `radial-gradient(circle at 50% 50%, ${activeColor.hex} 0%, transparent 80%)`,
-                  opacity: 0.55
+                  opacity: 0.55,
+                  zIndex: 2
                 }}
               ></div>
 
@@ -73,19 +89,35 @@ export default function Interior() {
                 className="interior-blend-layer-screen"
                 style={{
                   background: `linear-gradient(to top, ${activeColor.hex} 0%, transparent 100%)`,
-                  opacity: 0.12
+                  opacity: 0.12,
+                  zIndex: 2
                 }}
               ></div>
 
-              {/* Base Premium High-Tech Cockpit Image */}
-              <img
+              {/* Base Cockpit Image with active camera springs */}
+              <motion.img
                 src={interiorImg}
                 alt="AETHER EV-9 Cockpit Cabin"
                 className="interior-img"
+                animate={{
+                  scale: activeColor.zoomScale,
+                  x: activeColor.zoomX,
+                  y: activeColor.zoomY
+                }}
+                transition={{
+                  type: 'spring',
+                  damping: 24,
+                  stiffness: 70
+                }}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover'
+                }}
               />
 
               {/* HUD Dynamic Driving Mode Tag Overlay */}
-              <div className="interior-tag-hud">
+              <div className="interior-tag-hud" style={{ zIndex: 10 }}>
                 <div
                   className="hud-dot"
                   style={{

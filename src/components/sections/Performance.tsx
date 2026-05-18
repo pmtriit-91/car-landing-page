@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { Zap, Play, RotateCcw } from 'lucide-react'
+import { Zap, Play, RotateCcw, Activity } from 'lucide-react'
 
 // Simple count up animator helper component
 interface CountUpProps {
@@ -41,10 +41,100 @@ function CountUp({ value, duration = 1.5, decimals = 0, suffix = "" }: CountUpPr
   }, [value, duration, isInView])
 
   return (
-    <span ref={nodeRef} className="metric-val">
+    <span ref={nodeRef} className="metric-val" style={{ fontFamily: 'var(--font-tech)' }}>
       {count.toFixed(decimals)}
       {suffix}
     </span>
+  )
+}
+
+// Interactive Real-Time Oscilloscope Telemetry Wave Canvas
+function TelemetryOscilloscope({ color }: { color: string }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    let animationId: number
+    let angle = 0
+
+    // Set dimensions
+    const resizeCanvas = () => {
+      canvas.width = canvas.parentElement?.clientWidth || 300
+      canvas.height = 100
+    }
+    resizeCanvas()
+    window.addEventListener('resize', resizeCanvas)
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      
+      // Draw grid lines
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)'
+      ctx.lineWidth = 1
+      for (let i = 0; i < canvas.width; i += 20) {
+        ctx.beginPath()
+        ctx.moveTo(i, 0)
+        ctx.lineTo(i, canvas.height)
+        ctx.stroke()
+      }
+      for (let i = 0; i < canvas.height; i += 15) {
+        ctx.beginPath()
+        ctx.moveTo(0, i)
+        ctx.lineTo(canvas.width, i)
+        ctx.stroke()
+      }
+
+      // Draw sine-noise oscilloscope wave
+      ctx.strokeStyle = color
+      ctx.lineWidth = 1.5
+      ctx.shadowBlur = 8
+      ctx.shadowColor = color
+      ctx.beginPath()
+
+      for (let x = 0; x < canvas.width; x++) {
+        // Compose multiple sine waves + random high-frequency micro-jitter
+        const frequency1 = 0.02
+        const frequency2 = 0.08
+        const amplitude1 = 20
+        const amplitude2 = 5
+        const jitter = Math.sin(x * 0.5 + angle * 10) * (Math.random() * 1.5)
+
+        const y = canvas.height / 2 + 
+                  Math.sin(x * frequency1 + angle) * amplitude1 + 
+                  Math.sin(x * frequency2 - angle * 2) * amplitude2 + 
+                  jitter
+
+        if (x === 0) {
+          ctx.moveTo(x, y)
+        } else {
+          ctx.lineTo(x, y)
+        }
+      }
+      ctx.stroke()
+      ctx.shadowBlur = 0 // reset shadow
+
+      angle += 0.05
+      animationId = requestAnimationFrame(draw)
+    }
+    draw()
+
+    return () => {
+      window.removeEventListener('resize', resizeCanvas)
+      cancelAnimationFrame(animationId)
+    }
+  }, [color])
+
+  return (
+    <div style={{ width: '100%', height: '80px', marginTop: '16px', position: 'relative', overflow: 'hidden', borderRadius: '8px', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.02)' }}>
+      <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
+      <div style={{ position: 'absolute', top: '4px', left: '8px', fontSize: '7px', fontFamily: 'monospace', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>
+        SIGNAL ACTIVE // 1000Hz
+      </div>
+    </div>
   )
 }
 
@@ -80,28 +170,32 @@ export default function Performance() {
       decimals: 2,
       suffix: "s",
       label: "Gia tốc 0-100 km/h",
-      desc: "Vượt qua giới hạn vật lý với khối động cơ Tri-Motor siêu dẫn dẫn động 4 bánh chủ động."
+      desc: "Vượt qua giới hạn vật lý nhờ khối động cơ Tri-Motor siêu dẫn dẫn động 4 bánh chủ động torque-vectoring.",
+      color: "var(--accent-crimson)"
     },
     {
       value: 950,
       decimals: 0,
       suffix: " km",
       label: "Phạm vi hoạt động (WLTP)",
-      desc: "Khối pin thể rắn thế hệ mới phân bổ trọng lượng tối ưu, giảm hao phí nhiệt năng."
+      desc: "Khối pin thể rắn thế hệ mới phân bổ trọng lượng tối ưu, triệt tiêu hao phí nhiệt lượng truyền dẫn.",
+      color: "var(--accent-cyan)"
     },
     {
       value: 350,
       decimals: 0,
       suffix: " km/h",
       label: "Tốc độ tối đa lý thuyết",
-      desc: "Tinh chỉnh hoàn hảo tỷ số truyền động vi sai và cánh gió chủ động tăng lực bám."
+      desc: "Hệ số truyền động vi sai kỹ thuật số và cánh gió chủ động biến đổi lực nén liên tục.",
+      color: "var(--accent-crimson)"
     },
     {
       value: 8,
       decimals: 0,
       suffix: " phút",
       label: "Thời gian sạc nhanh 10-80%",
-      desc: "Nhờ kết cấu mạng lưới điện áp siêu cao 800V và cổng sạc lõi lỏng AETHER Supercharge."
+      desc: "Mạng lưới truyền dẫn điện áp siêu cao 800V và cổng sạc lõi lỏng siêu dẫn của AETHER.",
+      color: "var(--accent-cyan)"
     }
   ]
 
@@ -127,8 +221,8 @@ export default function Performance() {
           </p>
         </div>
 
-        {/* Technical Metric Cards */}
-        <div className="metrics-grid">
+        {/* Technical Metric Cards / Telemetry Dashboard */}
+        <div className="metrics-grid" style={{ gap: '24px' }}>
           {metrics.map((m, index) => (
             <motion.div
               key={index}
@@ -137,18 +231,34 @@ export default function Performance() {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: index * 0.1 }}
               className="metric-card glass-panel"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                padding: '36px',
+                borderRadius: '24px',
+                border: '1px solid rgba(255,255,255,0.03)',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
+                minHeight: '360px'
+              }}
             >
               <div>
-                <p style={{ display: 'flex', alignItems: 'baseline' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                  <span className="metric-lbl glow-text-crimson" style={{ color: m.color, textShadow: `0 0 10px ${m.color}35`, fontSize: '0.65rem', fontFamily: 'monospace', letterSpacing: '0.1em' }}>
+                    {m.label.toUpperCase()}
+                  </span>
+                  <Activity size={12} style={{ color: m.color, opacity: 0.6 }} />
+                </div>
+                <p style={{ display: 'flex', alignItems: 'baseline', margin: '16px 0' }}>
                   <CountUp value={m.value} decimals={m.decimals} suffix={m.suffix} />
                 </p>
-                <p className="metric-lbl glow-text-crimson">
-                  {m.label}
+                <p className="metric-desc" style={{ fontSize: '0.75rem', lineHeight: '1.5', color: 'var(--text-secondary)' }}>
+                  {m.desc}
                 </p>
               </div>
-              <p className="metric-desc">
-                {m.desc}
-              </p>
+
+              {/* Integrated Real-Time Wave Graph */}
+              <TelemetryOscilloscope color={m.color} />
             </motion.div>
           ))}
         </div>

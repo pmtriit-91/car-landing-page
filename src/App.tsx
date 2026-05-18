@@ -1,6 +1,7 @@
 import Navbar from './components/layout/Navbar'
 import Hero from './components/sections/Hero'
 import Showcase from './components/sections/Showcase'
+import Engineering from './components/sections/Engineering'
 import Story from './components/sections/Story'
 import Features from './components/sections/Features'
 import Performance from './components/sections/Performance'
@@ -22,7 +23,10 @@ function App() {
         {/* 2. Interactive Vehicle Showcase - 2.5D spatial parallax */}
         <Showcase />
 
-        {/* 3. Scroll-based details story telling - Zoom in wheel, headlight, aerodynamics */}
+        {/* 3. 3D Exploded View Engineering Schematic */}
+        <Engineering />
+
+        {/* 4. Scroll-based details story telling - Zoom in wheel, headlight, aerodynamics */}
         <Story />
 
         {/* 4. Intelligent asymmetric technical features grid */}
