@@ -1,0 +1,28 @@
+{
+  "generated_at": "2026-05-18",
+  "base_package": "agents-skills-restructured-antigravity-gemini-context-safe.zip",
+  "claude_source": "everything-claude-code-main.zip",
+  "merge_policy": "non-destructive: preserve existing skills; add Claude Code AI OS as optional vendor pack",
+  "base_existing_skill_dirs": [
+    "git-commit-excellence",
+    "project-memory",
+    "vercel-composition-patterns",
+    "vercel-react-best-practices",
+    "vercel-react-native-skills",
+    "web-design-guidelines"
+  ],
+  "claude_vendor_counts": {
+    "skills": 230,
+    "agents_files": 60,
+    "commands_files": 75,
+    "rules_files": 129
+  },
+  "new_files": [
+    ".agents/README_AI_OS_MERGED.md",
+    ".agents/integrations/claude-code-ai-os-integration.md",
+    ".agents/routers/advanced-ai-os-activation.md",
+    ".agents/workflows/advanced-agent-loop.md",
+    ".agents/safety/advanced-security-scan.md",
+    ".agents/optional/claude-code-ai-os-pack/"
+  ]
+}
